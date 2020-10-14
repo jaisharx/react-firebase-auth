@@ -3,18 +3,6 @@ import { auth } from '../firebase';
 
 const AuthContext = React.createContext();
 
-function signup(email, password) {
-    return auth.createUserWithEmailAndPassword(email, password);
-}
-
-function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password);
-}
-
-function logout() {
-    return auth.signOut();
-}
-
 export function AuthProvider({ children }) {
     const [currentUser, setCurrentUser] = useState();
     const [loading, setLoading] = useState(true);
@@ -28,13 +16,40 @@ export function AuthProvider({ children }) {
         return unsubscribe;
     }, []);
 
+    function signup(email, password) {
+        return auth.createUserWithEmailAndPassword(email, password);
+    }
+    
+    function login(email, password) {
+        return auth.signInWithEmailAndPassword(email, password);
+    }
+    
+    function logout() {
+        return auth.signOut();
+    }
+    
+    function resetPassword(email) {
+        return auth.sendPasswordResetEmail(email);
+    }
+    
+    function updateEmail(email) {
+        return currentUser.updateEmail(email);
+    }
+    
+    function updatePassword(password) {
+        return currentUser.updatePassword(password);
+    }
+
     return (
         <AuthContext.Provider
             value={{
                 currentUser,
                 login,
                 signup,
-                logout
+                logout,
+                resetPassword,
+                updateEmail,
+                updatePassword
             }}
         >
             {!loading && children}
